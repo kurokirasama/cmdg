@@ -712,7 +712,9 @@ func (mv *MessageView) Run(ctx context.Context) error {
 			log.Debugf("MessageListView got key %q", key)
 			switch key {
 			case "?", input.F1:
-				help(messageListViewHelp, mv.keys)
+                                if err := help(messageListViewHelp, mv.keys); err != nil {
+                                        log.Infof("help() failed: %v", err)
+                                }
 			case input.Enter, input.Right:
 				if len(mv.messages) == 0 {
 					// Let's assume we've never gotten to the state where mv.pos >= len(mv.messages)
