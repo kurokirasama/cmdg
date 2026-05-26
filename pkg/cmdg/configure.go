@@ -1,3 +1,4 @@
+// Package cmdg is the "library" part of the cmdg binary.
 package cmdg
 
 import (

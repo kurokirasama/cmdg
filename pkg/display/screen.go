@@ -117,9 +117,7 @@ func (s *Screen) Copy() *Screen {
 		Height: s.Height,
 		buffer: make([]string, len(s.buffer)),
 	}
-	for n := range s.buffer {
-		r.buffer[n] = s.buffer[n]
-	}
+        copy(r.buffer, s.buffer)
 	return r
 }
 
