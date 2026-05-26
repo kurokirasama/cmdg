@@ -1,3 +1,4 @@
+// Package gpg supports gnupg integration.
 package gpg
 
 import (

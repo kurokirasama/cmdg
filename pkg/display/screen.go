@@ -1,3 +1,4 @@
+// Package display has displaying functions.
 package display
 
 import (
