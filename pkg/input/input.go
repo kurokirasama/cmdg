@@ -12,6 +12,7 @@ import (
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+        //nolint:staticcheck
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/sys/unix"
 )
@@ -194,7 +195,7 @@ func readByte(fd int, timeout time.Duration) (byte, error) {
 		return 0, errTimeout
 	}
 	//idle := keyTime.Sub(last)
-	b := make([]byte, 1, 1)
+	b := make([]byte, 1)
 	//log.Infof("Non-iowait input time: %v", idle)
 	// log.Infof("About to read")
 
@@ -341,7 +342,11 @@ func (i *Input) Start() error {
 	go func() {
 		defer close(i.running)
 		defer close(i.keys)
-		defer terminal.Restore(fd, oldState)
+		defer func() {
+                        if err := terminal.Restore(fd, oldState); err != nil {
+                                log.Infof("Failed to restore terminal: %v", err)
+                        }
+                }()
 		last := time.Now()
 		lastEnter := time.Now()
 		for {

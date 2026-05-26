@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -27,11 +28,15 @@ func (h *mockGmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		var d struct {
 			Raw string `json:"raw"`
 		}
-		json.Unmarshal(content, &d)
+		if err := json.Unmarshal(content, &d); err != nil {
+			log.Fatalf("Failed to marshal: %v", err)
+		}
 		raw, _ := base64.URLEncoding.DecodeString(d.Raw)
 		h.sentMsg = string(raw)
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `{"id": "sent-123"}`)
+		if _, err := fmt.Fprint(w, `{"id": "sent-123"}`); err != nil {
+			log.Fatalf("Failed to write reply: %v", err)
+		}
 		return
 	}
 	if r.Method == "GET" && strings.Contains(r.URL.Path, "/messages/msg-123") && !strings.Contains(r.URL.Path, "/attachments") {
@@ -58,14 +63,18 @@ func (h *mockGmailHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				},
 			},
 		}
-		json.NewEncoder(w).Encode(msg)
+		if err := json.NewEncoder(w).Encode(msg); err != nil {
+			log.Fatalf("Failed to encode: %v", err)
+		}
 		return
 	}
 	if r.Method == "GET" && strings.Contains(r.URL.Path, "/attachments/att-123") {
 		att := &gmail.MessagePartBody{
 			Data: base64.URLEncoding.EncodeToString([]byte("attachment content")),
 		}
-		json.NewEncoder(w).Encode(att)
+		if err := json.NewEncoder(w).Encode(att); err != nil {
+			log.Fatalf("Failed to encode: %v", err)
+		}
 		return
 	}
 	w.WriteHeader(http.StatusNotFound)

@@ -2,7 +2,6 @@ package cmdg
 
 import (
 	"context"
-	"sync"
 
 	gmail "google.golang.org/api/gmail/v1"
 )
@@ -11,8 +10,6 @@ import (
 type Page struct {
 	Label string
 	Query string
-
-	m sync.RWMutex
 
 	conn     *CmdG
 	Messages []*Message

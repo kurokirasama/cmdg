@@ -207,20 +207,18 @@ func Entry(prompt string, keys *input.Input) (string, error) {
 		screen.Printlnf(start+2, "%s", content)
 		screen.SetCursor(start+2, display.StringWidth(content)+1)
 		screen.Draw()
-		select {
-		case key := <-keys.Chan():
-			switch key {
-			case input.Enter:
-				return cur, nil
-			case input.Backspace, input.CtrlH:
-				cur = TrimOneChar(cur)
-			case input.CtrlU:
-				cur = ""
-			case input.CtrlC:
-				return "", ErrAborted
-			default:
-				cur += string(key)
-			}
+		key := <-keys.Chan()
+		switch key {
+		case input.Enter:
+			return cur, nil
+		case input.Backspace, input.CtrlH:
+			cur = TrimOneChar(cur)
+		case input.CtrlU:
+			cur = ""
+		case input.CtrlC:
+			return "", ErrAborted
+		default:
+			cur += string(key)
 		}
 	}
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/mattn/go-runewidth"
 	log "github.com/sirupsen/logrus"
+        //nolint:staticcheck
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -127,7 +128,7 @@ func NewScreen2(w int, h int) *Screen {
 	return &Screen{
 		Width:  w,
 		Height: h,
-		buffer: make([]string, h, h),
+		buffer: make([]string, h),
 	}
 }
 
@@ -189,7 +190,7 @@ func (s *Screen) Draw() {
 				log.Debugf("Scroll %d, first %d", ofs, start)
 				o = append(o, fmt.Sprintf("\033[%d;%dr\033[%dT", start, len(s.buffer)-1, -ofs))
 				head := s.prevBuffer[:start+ofs]
-				mid := make([]string, -ofs, -ofs)
+				mid := make([]string, -ofs)
 				rest := s.prevBuffer[start+ofs:]
 				s.prevBuffer = append(head, append(mid, rest...)...)
 			}

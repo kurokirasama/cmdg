@@ -51,10 +51,10 @@ func getInput(ctx context.Context, prefill string, keys *input.Input) (string, e
 	// Stop UI.
 	keys.Stop()
 	defer func() {
-                if err := keys.Start(); err != nil {
-                        log.Errorf("Failed to restart input: %v", err)
-                }
-        }()
+		if err := keys.Start(); err != nil {
+			log.Errorf("Failed to restart input: %v", err)
+		}
+	}()
 
 	cmd := exec.CommandContext(ctx, visualBinary, tmpf.Name())
 	cmd.Stdin = os.Stdin
@@ -272,9 +272,11 @@ func compose(ctx context.Context, conn *cmdg.CmdG, headOps []headOp, keys *input
 					break
 				}
 			}
-			if a == "S" {
-				// TODO: also archive.
-			}
+			/*
+				if a == "S" {
+					// TODO: also archive.
+				}
+			*/
 			return nil
 		case "d":
 			st := time.Now()

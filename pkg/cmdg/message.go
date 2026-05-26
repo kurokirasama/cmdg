@@ -36,8 +36,6 @@ const (
 )
 
 const (
-	tmpfilePattern = "cmdg-*"
-
 	defaultInboxBG = "#ffffff"
 	defaultInboxFG = "#000000"
 )
@@ -1066,6 +1064,9 @@ func (msg *Message) tryGPGEncrypted(ctx context.Context) error {
 				return errors.Wrap(err, "failed to get mime part")
 			}
 			dec, err := toUTF8Reader(map[string][]string(p.Header), p)
+			if err != nil {
+				return errors.Wrap(err, "creating utf8reading for mime part")
+			}
 			t, err := ioutil.ReadAll(dec)
 			if err != nil {
 				return errors.Wrap(err, "utf8reading mime part")
@@ -1087,12 +1088,15 @@ func (msg *Message) tryGPGEncrypted(ctx context.Context) error {
 					return errors.Wrap(err, "failed to decrypt")
 				}
 			} else {
-				// TODO: handle attachment.
+                                _ = "TODO: handle attachment"
 			}
 		}
 
 	} else {
 		r, err := toUTF8Reader(map[string][]string(msg2.Header), msg2.Body)
+		if err != nil {
+			return err
+		}
 		t, err := ioutil.ReadAll(r)
 		if err != nil {
 			return err

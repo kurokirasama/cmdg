@@ -346,7 +346,6 @@ func (ov *OpenMessageView) incrementalSearch(ctx context.Context, inlines []stri
 		case <-ctx.Done():
 			return -1, ctx.Err()
 		case key, ok = <-ov.keys.Chan():
-			break
 		}
 		if !ok {
 			return -1, fmt.Errorf("incremental search key read channel closed")
@@ -594,6 +593,7 @@ func (ov *OpenMessageView) Run(ctx context.Context) (*MessageViewOp, error) {
 				return OpNext(), nil
 			case "U":
 				if err := ov.msg.AddLabelID(ctx, cmdg.Unread); err != nil {
+                                        //nolint:staticcheck
 					ov.errors <- fmt.Errorf("Failed to mark unread : %v", err)
 				} else {
 					return nil, nil
@@ -614,14 +614,17 @@ func (ov *OpenMessageView) Run(ctx context.Context) (*MessageViewOp, error) {
 				ov.Draw(lines, scroll)
 			case "f":
 				if err := forward(ctx, conn, ov.keys, ov.msg); err != nil {
+                                        //nolint:staticcheck
 					ov.errors <- fmt.Errorf("Failed to forward: %v", err)
 				}
 			case "r":
 				if err := reply(ctx, conn, ov.keys, ov.msg); err != nil {
+                                        //nolint:staticcheck
 					ov.errors <- fmt.Errorf("Failed to reply: %v", err)
 				}
 			case "a":
 				if err := replyAll(ctx, conn, ov.keys, ov.msg); err != nil {
+                                        //nolint:staticcheck
 					ov.errors <- fmt.Errorf("Failed to replyAll: %v", err)
 				}
 			case "H":

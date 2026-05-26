@@ -101,6 +101,7 @@ func auth(cfg ConfigOAuth) (string, error) {
 	fmt.Printf("Cut and paste this URL into your browser:\n  %s\n", ocfg.AuthCodeURL("", at))
 	line := <-codeCh
 	fmt.Printf("Returned code: %s\n", line)
+        //nolint:staticcheck
 	token, err := ocfg.Exchange(oauth2.NoContext, line)
 	if err != nil {
 		return "", err
