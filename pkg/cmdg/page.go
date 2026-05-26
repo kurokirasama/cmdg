@@ -26,7 +26,7 @@ func (p *Page) PreloadSubjects(ctx context.Context) error {
 	conc := 100
 	sem := make(chan struct{}, conc)
 	num := len(p.Response.Messages)
-	errs := make([]error, num, num)
+	errs := make([]error, num)
 	for n := 0; n < len(p.Response.Messages); n++ {
 		n := n
 		sem <- struct{}{}

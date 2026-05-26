@@ -115,7 +115,7 @@ func (s *Screen) Copy() *Screen {
 	r := &Screen{
 		Width:  s.Width,
 		Height: s.Height,
-		buffer: make([]string, len(s.buffer), len(s.buffer)),
+		buffer: make([]string, len(s.buffer)),
 	}
 	for n := range s.buffer {
 		r.buffer[n] = s.buffer[n]
@@ -134,7 +134,7 @@ func NewScreen2(w int, h int) *Screen {
 
 // Clear clears the screen.
 func (s *Screen) Clear() {
-	s.buffer = make([]string, s.Height, s.Height)
+	s.buffer = make([]string, s.Height)
 }
 
 // findScroll return the scroll offset (lines) and index of first line to scroll

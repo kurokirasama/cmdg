@@ -409,7 +409,9 @@ func (ov *OpenMessageView) incrementalSearch(ctx context.Context, inlines []stri
 			// Not found even after wrapping.
 			found = 0
 		}
-		ov.Draw(lines, found)
+                if err := ov.Draw(lines, found); err != nil {
+                        log.Infof("Failed to draw: %v", err)
+                }
 		copy(lines, inlines)
 		ov.screen.Draw()
 	}
@@ -533,7 +535,9 @@ func (ov *OpenMessageView) Run(ctx context.Context) (*MessageViewOp, error) {
 				if err := ov.msg.ReloadLabels(ctx); err != nil {
 					ov.errors <- errors.Wrapf(err, "Failed to reload labels")
 				}
-				ov.Draw(lines, scroll)
+                                if err := ov.Draw(lines, scroll); err != nil {
+                                        log.Infof("Failed to draw: %v", err)
+                                }
 			case "l":
 				var opts []*dialog.Option
 				for _, l := range conn.Labels() {
@@ -558,7 +562,9 @@ func (ov *OpenMessageView) Run(ctx context.Context) (*MessageViewOp, error) {
 						ov.errors <- errors.Wrapf(err, "Failed to reload labels")
 					}
 				}
-				ov.Draw(lines, scroll)
+                                if err := ov.Draw(lines, scroll); err != nil {
+                                        log.Infof("Failed to draw: %v", err)
+                                }
 			case "L":
 				var opts []*dialog.Option
 				labels, err := ov.msg.GetLabels(ctx, true)
