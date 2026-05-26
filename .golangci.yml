@@ -5,11 +5,12 @@ run:
   tests: true
   modules-download-mode: readonly
 
-linters-settings:
-  staticcheck:
-    checks:
-      - all
-      - -ST1005
-      - -SA1019
-      - -QF1004
-      - -QF1001
+linters:
+  settings:
+    staticcheck:
+      checks:
+        - all
+        - -ST1005
+        - -SA1019
+        - -QF1004
+        - -QF1001
