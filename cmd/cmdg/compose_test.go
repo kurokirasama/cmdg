@@ -23,7 +23,9 @@ type fakeSend struct {
 
 func (fs *fakeSend) bad(w http.ResponseWriter, f string, args ...interface{}) {
 	w.WriteHeader(http.StatusBadRequest)
-	fmt.Fprintf(w, f, args...)
+        if _, err := fmt.Fprintf(w, f, args...); err != nil {
+                log.Fatalf("writing response failed: %v", err)
+        }
 }
 
 func (fs *fakeSend) ServeHTTP(w http.ResponseWriter, r *http.Request) {

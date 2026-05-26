@@ -281,7 +281,9 @@ func main() {
 		if err != nil {
 			log.Fatalf("Can't create logfile %q: %v", *logFile, err)
 		}
-		defer f.Close()
+		defer func() {
+                        _ = f.Close()
+                }()
 		log.SetOutput(f)
 		if *logJSON {
 			log.SetFormatter(&log.JSONFormatter{})

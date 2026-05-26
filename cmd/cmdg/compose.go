@@ -41,7 +41,7 @@ func getInput(ctx context.Context, prefill string, keys *input.Input) (string, e
 		}
 	}()
 	if _, err := tmpf.Write([]byte(prefill)); err != nil {
-		tmpf.Close()
+		_ = tmpf.Close()
 		return "", errors.Wrapf(err, "prefilling compose file %q with %d bytes", tmpf.Name(), len(prefill))
 	}
 	if err := tmpf.Close(); err != nil {
@@ -50,7 +50,11 @@ func getInput(ctx context.Context, prefill string, keys *input.Input) (string, e
 
 	// Stop UI.
 	keys.Stop()
-	defer keys.Start()
+	defer func() {
+                if err := keys.Start(); err != nil {
+                        log.Errorf("Failed to restart input: %v", err)
+                }
+        }()
 
 	cmd := exec.CommandContext(ctx, visualBinary, tmpf.Name())
 	cmd.Stdin = os.Stdin
@@ -251,7 +255,7 @@ func compose(ctx context.Context, conn *cmdg.CmdG, headOps []headOp, keys *input
 							return errors.Wrapf(err, "couldn't open local file")
 						}
 						if _, err := f.Write([]byte(msg)); err != nil {
-							f.Close()
+							_ = f.Close()
 							return errors.Wrapf(err, "couldn't write to local file")
 						}
 						if err := f.Close(); err != nil {
@@ -287,7 +291,7 @@ func compose(ctx context.Context, conn *cmdg.CmdG, headOps []headOp, keys *input
 				break
 			}
 			if err != nil {
-				dialog.Message("Failed to attach", fmt.Sprintf("Failed to attach file: %v", err), keys)
+				_ = dialog.Message("Failed to attach", fmt.Sprintf("Failed to attach file: %v", err), keys)
 			}
 			doEdit = false
 			attachments = append(attachments, f)
