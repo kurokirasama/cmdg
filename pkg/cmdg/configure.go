@@ -3,7 +3,6 @@ package cmdg
 import (
 	"bufio"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"html"
 	"io/ioutil"
@@ -33,8 +32,8 @@ var (
 )
 
 var (
-	// TODO: Listen to a dynamic port.
-	oauthListenPort = flag.Int("oauth_listen_port", 0, "Oauth port to listen to. 0 means pick dynamically.")
+// TODO: Listen to a dynamic port.
+// oauthListenPort = flag.Int("oauth_listen_port", 0, "Oauth port to listen to. 0 means pick dynamically.")
 )
 
 // ConfigOAuth contains the config for the oauth.
@@ -77,16 +76,16 @@ func auth(cfg ConfigOAuth) (string, error) {
 	codeCh := make(chan string)
 	go func() {
 		_ = http.Serve(ln, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-                        if err := r.ParseForm(); err != nil {
-                                log.Fatalf("Failed to parse form: %v", err)
-                        }
+			if err := r.ParseForm(); err != nil {
+				log.Fatalf("Failed to parse form: %v", err)
+			}
 			codes := r.URL.Query()["code"]
 			if len(codes) == 0 {
-				fmt.Fprintf(w, "Did not get a code. Something's wrong.")
+				_, _ = fmt.Fprintf(w, "Did not get a code. Something's wrong.")
 				return
 			}
 			defer close(codeCh)
-			fmt.Fprintf(w, "Got code %q. You can close this tab now.", html.EscapeString(codes[0]))
+			_, _ = fmt.Fprintf(w, "Got code %q. You can close this tab now.", html.EscapeString(codes[0]))
 			codeCh <- codes[0]
 		}))
 	}()

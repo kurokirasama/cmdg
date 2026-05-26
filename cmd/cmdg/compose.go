@@ -369,6 +369,9 @@ func chooseFile(ctx context.Context, keys *input.Input) (*file, error) {
 		full := path.Join(startDir, fis[o.KeyInt].Name())
 		// TODO: attach a ReadCloser?
 		b, err := ioutil.ReadFile(full)
+		if err != nil {
+			return nil, err
+		}
 		return &file{
 			name:    fis[o.KeyInt].Name(),
 			content: b,

@@ -8,7 +8,7 @@ import (
 
 	"github.com/mattn/go-runewidth"
 	log "github.com/sirupsen/logrus"
-        //nolint:staticcheck
+	//nolint:staticcheck
 	"golang.org/x/crypto/ssh/terminal"
 )
 

@@ -175,7 +175,7 @@ func New(fn string) (*CmdG, error) {
 
 	// Attach APIkey, if any.
 	if conf.OAuth.APIKey != "" {
-                //nolint:staticcheck
+		//nolint:staticcheck
 		newtp := &transport.APIKey{
 			Key:       conf.OAuth.APIKey,
 			Transport: tp,
@@ -217,7 +217,7 @@ func (c *CmdG) setupClients() error {
 	// Set up gmail client.
 	{
 		var err error
-                //nolint:staticcheck
+		//nolint:staticcheck
 		c.gmail, err = gmail.New(c.authedClient)
 		if err != nil {
 			return errors.Wrap(err, "creating GMail client")
@@ -228,7 +228,7 @@ func (c *CmdG) setupClients() error {
 	// Set up drive client.
 	{
 		var err error
-                //nolint:staticcheck
+		//nolint:staticcheck
 		c.drive, err = drive.New(c.authedClient)
 		if err != nil {
 			return errors.Wrap(err, "creating Drive client")
@@ -537,7 +537,9 @@ func (c *CmdG) GetFile(ctx context.Context, fn string) ([]byte, error) {
 				if err != nil {
 					return nil, err
 				}
-				defer r.Body.Close()
+				defer func() {
+					_ = r.Body.Close()
+				}()
 				return ioutil.ReadAll(r.Body)
 			}
 		}

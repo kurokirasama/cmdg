@@ -93,7 +93,9 @@ func (gpg *GPG) Verify(ctx context.Context, data, sig string) (*Status, error) {
 		return nil, err
 	}
 	if !*debugNoRemove {
-		defer os.RemoveAll(dir)
+		defer func() {
+			_ = os.RemoveAll(dir)
+		}()
 	}
 
 	log.Infof("Checking signature with %q…", dir)

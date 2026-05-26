@@ -90,7 +90,7 @@ func replyOrForward(ctx context.Context, conn *cmdg.CmdG, keys *input.Input, to,
 	refs, err := msg.GetReferences(ctx)
 	if err != nil {
 		// don't care
-                _ = err
+		_ = err
 	}
 
 	headOps := []headOp{

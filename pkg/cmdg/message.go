@@ -744,8 +744,8 @@ func (msg *Message) GetHeader(ctx context.Context, k string) (string, error) {
 // MIMEEncode does mime decode for gmail. Seems to be special version of base64.
 func MIMEEncode(s string) string {
 	s = base64.StdEncoding.EncodeToString([]byte(s))
-	s = strings.Replace(s, "+", "-", -1)
-	s = strings.Replace(s, "/", "_", -1)
+	s = strings.ReplaceAll(s, "+", "-")
+	s = strings.ReplaceAll(s, "/", "_")
 	return s
 }
 
@@ -1088,7 +1088,7 @@ func (msg *Message) tryGPGEncrypted(ctx context.Context) error {
 					return errors.Wrap(err, "failed to decrypt")
 				}
 			} else {
-                                _ = "TODO: handle attachment"
+				_ = "TODO: handle attachment"
 			}
 		}
 

@@ -28,7 +28,7 @@ type Option struct {
 // String gives string representation usable for showing to the user.
 func (o *Option) String() string {
 	if o.Label == "" {
-		return fmt.Sprintf("%s", o.Key)
+		return o.Key
 	}
 	return o.Label
 }
@@ -388,7 +388,9 @@ func MultiSelection(opts []*Option, prompt string, keys *input.Input) (string, e
 			}
 			if key == input.Enter {
 				if err := validateEmails(cur); err != nil {
-					Message("Invalid recipients", err.Error(), keys)
+					if err := Message("Invalid recipients", err.Error(), keys); err != nil {
+						log.Infof("Failed to show message: %v", err)
+					}
 					continue
 				}
 				return cur, nil

@@ -23,9 +23,9 @@ type fakeSend struct {
 
 func (fs *fakeSend) bad(w http.ResponseWriter, f string, args ...interface{}) {
 	w.WriteHeader(http.StatusBadRequest)
-        if _, err := fmt.Fprintf(w, f, args...); err != nil {
-                fs.bad(w, "writing response failed: %v", err)
-        }
+	if _, err := fmt.Fprintf(w, f, args...); err != nil {
+		fs.bad(w, "writing response failed: %v", err)
+	}
 }
 
 func (fs *fakeSend) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -61,9 +61,9 @@ func (fs *fakeSend) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	fs.msg = string(raw)
 	w.WriteHeader(http.StatusOK)
-        if _, err := fmt.Fprintf(w, `{ "id": "12345" }`); err != nil {
-                fs.bad(w, "failed to write reply: %v", err)
-        }
+	if _, err := fmt.Fprintf(w, `{ "id": "12345" }`); err != nil {
+		fs.bad(w, "failed to write reply: %v", err)
+	}
 }
 
 // net.RoundTripper that rewrites requests to the local fake.
