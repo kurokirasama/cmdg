@@ -84,7 +84,7 @@ func (redir *redirector) RoundTrip(r *http.Request) (*http.Response, error) {
 }
 
 func crnl(s string) string {
-	return strings.Replace(s, "\n", "\r\n", -1)
+	return strings.ReplaceAll(s, "\n", "\r\n")
 }
 
 func TestSendMessage(t *testing.T) {
