@@ -75,17 +75,21 @@ func auth(cfg ConfigOAuth) (string, error) {
 	fmt.Printf("Listening to port %d\n", port)
 
 	codeCh := make(chan string)
-	go http.Serve(ln, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		r.ParseForm()
-		codes := r.URL.Query()["code"]
-		if len(codes) == 0 {
-			fmt.Fprintf(w, "Did not get a code. Something's wrong.")
-			return
-		}
-		defer close(codeCh)
-		fmt.Fprintf(w, "Got code %q. You can close this tab now.", html.EscapeString(codes[0]))
-		codeCh <- codes[0]
-	}))
+	go func() {
+		_ = http.Serve(ln, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+                        if err := r.ParseForm(); err != nil {
+                                log.Fatalf("Failed to parse form: %v", err)
+                        }
+			codes := r.URL.Query()["code"]
+			if len(codes) == 0 {
+				fmt.Fprintf(w, "Did not get a code. Something's wrong.")
+				return
+			}
+			defer close(codeCh)
+			fmt.Fprintf(w, "Got code %q. You can close this tab now.", html.EscapeString(codes[0]))
+			codeCh <- codes[0]
+		}))
+	}()
 	// No need to clean up. This is run in -configure and will soon exit.
 
 	ocfg := oauth2.Config{
@@ -101,7 +105,7 @@ func auth(cfg ConfigOAuth) (string, error) {
 	fmt.Printf("Cut and paste this URL into your browser:\n  %s\n", ocfg.AuthCodeURL("", at))
 	line := <-codeCh
 	fmt.Printf("Returned code: %s\n", line)
-        //nolint:staticcheck
+	//nolint:staticcheck
 	token, err := ocfg.Exchange(oauth2.NoContext, line)
 	if err != nil {
 		return "", err

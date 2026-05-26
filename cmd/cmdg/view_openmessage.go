@@ -593,7 +593,9 @@ func (ov *OpenMessageView) Run(ctx context.Context) (*MessageViewOp, error) {
 							ov.errors <- errors.Wrapf(err, "Failed to reload labels")
 						}
 					}
-					ov.Draw(lines, scroll)
+                                        if err := ov.Draw(lines, scroll); err != nil {
+                                                log.Infof("Failed to draw: %v", err)
+                                        }
 				}
 			case "u", input.Left:
 				return nil, nil
@@ -612,11 +614,15 @@ func (ov *OpenMessageView) Run(ctx context.Context) (*MessageViewOp, error) {
 				}
 			case input.Home, input.XHome:
 				scroll = 0
-				ov.Draw(lines, scroll)
+                                if err := ov.Draw(lines, scroll); err != nil {
+                                        log.Infof("Failed to draw: %v", err)
+                                }
 			case "n", input.Down:
 				ov.screen.UseCache()
 				scroll = ov.scroll(ctx, len(lines), scroll, 1)
-				ov.Draw(lines, scroll)
+                                if err := ov.Draw(lines, scroll); err != nil {
+                                        log.Infof("Failed to draw: %v", err)
+                                }
 			case " ", input.CtrlV, input.PgDown:
 				scroll = ov.scroll(ctx, len(lines), scroll, ov.screen.Height-10)
 				ov.Draw(lines, scroll)
